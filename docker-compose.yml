@@ -1,6 +1,13 @@
 version: '3.7'
 
 services:
+  runesapi:
+    build: { context: . }
+    depends_on: ['postgres']
+    environment:
+      TYPEORM_URL: postgres://runesapi:runesapi@postgres/runes
+    ports: ['3000:3000', '3002:3002']
+
   postgres:
     image: postgres:12
     environment:

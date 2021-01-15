@@ -1,0 +1,15 @@
+.build
+node_modules
+.dist
+.github
+.vscode
+
+scripts
+test
+.env
+.eslintrc.json
+.gitignore
+.prettierrc.yml
+docker-compose.yml
+jest.config.js
+README.md
