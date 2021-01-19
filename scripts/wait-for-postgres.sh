@@ -1,13 +1,63 @@
 #!/bin/bash
 
-# This is the PG password for local development, if
-# this script is intended to be ran in a live environment
-# we may need to accept password as an argument for this script
-# or read from environment variables.
-export PGPASSWORD="runesapi";
+main() {
+  usage() { echo "Usage: $0 [-d <string*>] [-t <string*>] [-u <string*>] [-p <string*>] [-h <string>]" 1>&2; exit 1; }
 
-until psql -q -h localhost -U runesapi -d runes -c '\l'; do
-  echo >&2 "$(date +%I:%M:%S%p) Postgres is unavailable."
-  sleep 1
-done
-echo >&2 "$(date +%I:%M:%S%p) Postgres is now available."
+  while getopts ":h:d:t:u:p:" o; do
+      case "${o}" in
+          u)
+            u=${OPTARG}
+            ;;
+          p)
+            p=${OPTARG}
+            ;;
+          d)
+            d=${OPTARG}
+            ;;
+          t)
+            t=${OPTARG}
+            ;;
+          h)
+            h=${OPTARG}
+            ;;
+      esac
+  done
+  shift $((OPTIND-1))
+
+  if [ -z "${d}" ]; then
+    echo 'Missing flag "-d", please provide a database name.'
+    usage
+  fi
+
+  if [ -z "${t}" ]; then
+    echo 'Missing flag "-t", please provide a table name.'
+    usage
+  fi
+  if [ -z "${u}" ]; then
+    echo 'Missing flag "-u", please provide a username.'
+    usage
+  fi
+  if [ -z "${p}" ]; then
+    echo 'Missing flag "-p", please provide a password.'
+    usage
+  fi
+
+  if [ -z "${h}" ]; then
+    h="localhost"
+  fi
+
+  echo "d = ${d}"
+  echo "h = ${h}"
+  echo "t = ${t}"
+  echo "u = ${u}"
+  echo "p = ${p}"
+
+  export PGPASSWORD=$p
+  until psql -q -h $h -U $d -d $t -c '\l'; do
+    echo >&2 "$(date +%I:%M:%S%p) Postgres is unavailable."
+    sleep 1
+  done
+  echo >&2 "$(date +%I:%M:%S%p) Postgres is now available."
+}
+
+main "$@"

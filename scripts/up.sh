@@ -8,7 +8,7 @@ isAllocated=$?
 if [ $isAllocated == 1 ]; then
   echo "Port '$dbPort' not yet allocated, starting postgres now.";
   docker-compose up -d postgres;
-  sh ./scripts/wait-for-postgres.sh;
+  sh ./scripts/wait-for-postgres.sh -d runesapi -t runes -u runesapi -p runesapi
 else
   echo "Port '$dbPort' already allocated, attemping to re-run migrations.";
 fi
