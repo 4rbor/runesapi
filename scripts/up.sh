@@ -7,10 +7,10 @@ isAllocated=$?
 
 if [ $isAllocated == 1 ]; then
   echo "Port '$dbPort' not yet allocated, starting postgres now.";
-  docker-compose up -d postgres;
-  sh ./scripts/wait-for-postgres.sh -d runesapi -t runes -u runesapi -p runesapi
+  # The init container will handle the migrations for the first time
+  docker-compose up -d postgres runesapi-db-init;
 else
   echo "Port '$dbPort' already allocated, attemping to re-run migrations.";
+  npm run db:run:migration
 fi
 
-npm run db:run:migration

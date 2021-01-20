@@ -1,4 +1,6 @@
 FROM node:12-alpine
+RUN apk --update --no-cache add postgresql-client
+
 WORKDIR /app
 
 COPY tsconfig.json ./
@@ -7,9 +9,23 @@ COPY package-lock.json ./
 
 RUN npm ci
 
-COPY scripts .
-COPY src/types .
-COPY src/db .
+COPY .env ./
+COPY scripts scripts
+COPY src/types src/types
+COPY src/db src/db
 
-RUN ./scripts/wait-for-postgres.sh
+RUN ls -la
+RUN ls -la ./src/db
 
+ARG database="runesapi"
+ARG table="runes"
+ARG username="runesapi"
+ARG password="runesapi"
+ARG maxTries="30"
+ENV database=${database} \
+  table=${table} \
+  username=${username} \
+  password=${password} \
+  maxTries=${maxTries}
+
+ENTRYPOINT /app/scripts/migrate-orm.sh -d $database -t $table -u $username -p $password -h postgres -m $maxTries

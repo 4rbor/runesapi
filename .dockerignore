@@ -4,9 +4,7 @@ node_modules
 .github
 .vscode
 
-scripts
 test
-.env
 .eslintrc.json
 .gitignore
 .prettierrc.yml
