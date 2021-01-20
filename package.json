@@ -20,6 +20,7 @@
     "db:generate:migration": "ts-node ./node_modules/.bin/typeorm migration:generate -d src/db/migration",
     "db:run:migration": "ts-node ./node_modules/.bin/typeorm migration:run",
     "db:revert:migration": "ts-node ./node_modules/.bin/typeorm migration:revert",
+    "check": "tsc --noEmit && npm run check:prettier",
     "check:prettier": "prettier \"{.,,{src,test,.vscode}/**/}*.@(ts|js|json|yml|yaml)\" --list-different",
     "fix:prettier": "npm run check:prettier -- --write"
   },
